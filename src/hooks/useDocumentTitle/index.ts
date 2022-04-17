@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 export const useDocumentTitle = (title: string) => {
-  const [document_title, setDoucmentTitle] = useState(title);
+  const [documentTitle, setDoucmentTitle] = useState(`${title} | Tìm Người Ở Ghép`);
   useEffect(() => {
-    document.title = document_title;
-  }, [document_title]);
+    document.title = documentTitle;
+  }, [documentTitle]);
 
-  return [document_title, setDoucmentTitle];
+  return [documentTitle, setDoucmentTitle];
 };

@@ -2,7 +2,7 @@ import { useDocumentTitle } from '~/hooks';
 import { MainLayout } from '~/layouts';
 
 const Home = () => {
-  useDocumentTitle('Home');
+  useDocumentTitle('Trang chủ');
   return <MainLayout>jkhkhj</MainLayout>;
 };
 
