@@ -1,58 +1,57 @@
-import { Layout } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Layout, Menu } from 'antd';
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { Link, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 import { userAtom } from '~/recoil/state';
 
 const { Header, Content, Footer } = Layout;
 
 export const MainLayout: FC = ({ children }) => {
-  const user = useRecoilValue(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
+  const navigate = useNavigate();
+
+  const menu = (
+    <Menu>
+      <Menu.Item key={0}>
+        <Link to='/me/profile'>Quản lý tài khoản</Link>
+      </Menu.Item>
+      <Menu.Item key={1}>
+        <Link to='/me/rooms'>Quản lý tin rao</Link>
+      </Menu.Item>
+      <Menu.Item key={2}>
+        <button
+          onClick={() => {
+            setUser(null);
+            navigate('/');
+          }}
+          className='text-red-600'
+        >
+          Đăng xuất
+        </button>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Layout className='min-h-screen'>
       <Header className='flex items-center justify-between bg-white border-b border-[#f0f0f0]'>
-        <div className='text-2xl font-bold text-gray-300'>LOGO</div>
+        <div className='text-2xl font-bold text-gray-300'>
+          <Link to='/'>LOGO</Link>
+        </div>
         <div>
           {user ? (
-            <div className='flex gap-6'>
-              <span className='font-bold'>Hi, {user.fullname}</span>
-              <div>
-                <Link
-                  className='p-3 text-white bg-blue-700 rounded'
-                  to='/profile'
-                >
-                  Quản lý tài khoản
-                </Link>
+            <Dropdown overlay={menu} className='cursor-pointer'>
+              <div className='flex items-center gap-2'>
+                <span>Hi, {user?.fullname}</span>
+                <DownOutlined />
               </div>
-              <div>
-                <Link
-                  className='p-3 text-white bg-red-400 rounded'
-                  to='/create-room'
-                >
-                  Đăng tin mới
-                </Link>
-              </div>
-            </div>
+            </Dropdown>
           ) : (
-            <div className='flex gap-6'>
-              <div>
-                <Link
-                  className='p-3 text-white bg-red-400 rounded'
-                  to='/register'
-                >
-                  Đăng ký
-                </Link>
-              </div>
-              <div>
-                <Link
-                  className='p-3 text-white bg-blue-700 rounded'
-                  to='/login'
-                >
-                  Đăng nhập
-                </Link>
-              </div>
+            <div className='flex gap-4'>
+              <Link to='/login'>Đăng nhập</Link>
+              <Link to='/register'>Đăng ký</Link>
             </div>
           )}
         </div>
