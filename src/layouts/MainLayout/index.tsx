@@ -38,7 +38,9 @@ export const MainLayout: FC = ({ children }) => {
     <Layout className='min-h-screen'>
       <Header className='flex items-center justify-between bg-white border-b border-[#f0f0f0]'>
         <div className='text-2xl font-bold text-gray-300'>
-          <Link to='/'>LOGO</Link>
+          <Link to='/'>
+            <img className='w-16 h-16' src='https://i.imgur.com/lIAm6Ys.png' />
+          </Link>
         </div>
         <div>
           {user ? (
