@@ -10,6 +10,7 @@ export interface Room {
   districtId: number;
   wardId: number;
   detail: string;
+  create_at: string;
 }
 
 export const roomsAtom = atom<Room[]>({
