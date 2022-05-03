@@ -56,6 +56,7 @@ function EditProfile({ ward, district, user, setMode }: Props) {
   const [updateUser, setUpdateUser] = useState(user);
 
   const refetchUser = useUserInfo();
+  console.log('render');
 
   return (
     <Form

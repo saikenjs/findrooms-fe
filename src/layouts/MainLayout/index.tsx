@@ -60,7 +60,7 @@ export const MainLayout: FC = ({ children }) => {
       </Header>
       <Content className='p-5 bg-white'>{children}</Content>
       <Footer style={{ textAlign: 'center' }}>
-        TimNguoiOGhep ©2022 Created by QTDA 45K14_01
+        TimNguoiOGhep ©2022 QTDA 45K14_01
       </Footer>
     </Layout>
   );

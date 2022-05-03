@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { api } from '~/configs/axios';
+import { env } from '~/configs/env';
 import { MainLayout } from '~/layouts';
 import { districtAtom, Room, userAtom, wardsAtom } from '~/recoil/state';
 
@@ -19,12 +20,18 @@ const CreateRoom = () => {
 
   const submitForm = async () => {
     try {
-      await api.post('/rooms', room);
-
+      await api.post('/rooms', {
+        ...room,
+        userId: user?.id,
+        images: room.images?.fileList
+          .map((e: any) => e.response?.path)
+          .join('|'),
+      });
       message.success('Tạo tin đăng thành công!');
       navigate('/me/rooms');
     } catch (error) {
       message.error('Thất bại');
+      console.log(error);
     }
   };
 
@@ -107,7 +114,7 @@ const CreateRoom = () => {
         </Form.Item>
 
         <Form.Item name='images' label='Hình ảnh' required>
-          <Upload action='http://localhost:3001/rooms/upload'>
+          <Upload action={`${env.SERVER_URL}/rooms/upload`} listType='picture'>
             <div className='flex flex-col justify-center items-center border-dashed p-3 border-2'>
               <PlusOutlined />
               <div style={{ marginTop: 8 }}>Upload</div>

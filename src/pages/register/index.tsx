@@ -11,6 +11,8 @@ import { districtAtom, User, wardsAtom } from '~/recoil/state';
 const Register = () => {
   useDocumentTitle('Đăng ký');
 
+  const [form] = Form.useForm();
+
   const [user, setUser] = useState<Partial<User>>({});
   const navigate = useNavigate();
 
@@ -26,11 +28,15 @@ const Register = () => {
     <MainLayout>
       <div className='flex justify-center '>
         <Form
+          form={form}
           layout='vertical'
           className='p-5 shadow'
           onFinish={onFinish}
           autoComplete='off'
-          onValuesChange={(value, all) => setUser(all)}
+          onValuesChange={(value, all) => {
+            setUser(all);
+            if (value.districtId) form.setFieldsValue({ ...all, wardId: 0 });
+          }}
         >
           <h1 className='mb-6 text-2xl font-bold text-center'>Đăng Ký</h1>
           <Form.Item
@@ -114,10 +120,11 @@ const Register = () => {
           <Form.Item
             rules={[{ required: true }]}
             name='wardId'
-            initialValue={0}
+            initialValue='Chọn xã/phường'
             label='Xã/phường'
           >
             <Select value={user.wardId || 0}>
+              <Select.Option value={0}>Chọn xã/phường</Select.Option>
               {wards
                 .filter((e) => e.districtId === user.districtId)
                 .map((e) => (

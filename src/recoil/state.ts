@@ -2,6 +2,7 @@ import { atom } from 'recoil';
 
 export interface Room {
   id: number;
+  userId: number;
   title: string;
   description: string;
   price: number;
@@ -11,6 +12,8 @@ export interface Room {
   wardId: number;
   detail: string;
   create_at: string;
+  images: any;
+  view: number;
 }
 
 export const roomsAtom = atom<Room[]>({

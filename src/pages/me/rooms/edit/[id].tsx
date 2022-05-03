@@ -1,50 +1,53 @@
-import { Button, Form, Input, message, Select, Typography } from 'antd';
-import { useState } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message, Select, Typography, Upload } from 'antd';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { api } from '~/configs/axios';
+import { env } from '~/configs/env';
 import { useRoomInfo } from '~/hooks';
 import { MainLayout } from '~/layouts';
-import {
-  districtAtom,
-  Room,
-  roomsAtom,
-  userAtom,
-  wardsAtom,
-} from '~/recoil/state';
+import { districtAtom, Room, userAtom, wardsAtom } from '~/recoil/state';
 
 const EditRoom = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
   const user = useRecoilValue(userAtom);
 
-  useRoomInfo();
+  const { fetchRoom } = useRoomInfo();
 
   const districts = useRecoilValue(districtAtom);
   const wards = useRecoilValue(wardsAtom);
-  const rooms = useRecoilValue(roomsAtom);
 
-  const [room, setRoom] = useState<Partial<Room>>(
-    rooms.find((e) => e.id === Number(id)) || {}
-  );
+  const [room, setRoom] = useState<Partial<Room>>({});
+  console.log(room);
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetchRoom();
+      form.setFieldsValue(data.find((e: any) => e.id === Number(id)));
+      setRoom(data || {});
+    })();
+  }, []);
 
   const navigate = useNavigate();
 
-  form.setFieldsValue(room);
-
   if (!user) {
-    <Button
-      onClick={() => navigate('/login')}
-      className='bg-blue-500 mx-auto text-white block'
-    >
-      Please Login
-    </Button>;
+    return (
+      <Button
+        onClick={() => navigate('/login')}
+        className='bg-blue-500 mx-auto text-white block'
+      >
+        Hãy đăng nhập !
+      </Button>
+    );
   }
 
   return (
     <MainLayout>
       <Form
+        initialValues={room}
         form={form}
         className='container mx-auto'
         labelCol={{ span: 6 }}
@@ -109,11 +112,25 @@ const EditRoom = () => {
         <Form.Item label='Giá' name='price' required>
           <Input type='number' suffix='VND' />
         </Form.Item>
+
+        <Form.Item name='images' label='Hình ảnh' required>
+          <Upload action={`${env.SERVER_URL}/rooms/upload`} listType='picture'>
+            <div className='flex flex-col justify-center items-center border-dashed p-3 border-2'>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
+          </Upload>
+        </Form.Item>
       </Form>
       <Button
         onClick={async () => {
           try {
-            await api.patch(`/rooms/${id}`, room);
+            await api.patch(`/rooms/${id}`, {
+              ...room,
+              images: room.images?.fileList
+                .map((e: any) => e.response?.path)
+                .join('|'),
+            });
             message.success('Cập nhật thành công!');
             navigate('/me/rooms');
           } catch (error) {
